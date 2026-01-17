@@ -1,5 +1,11 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Surafino",
+  description: "Surafino blog & news platform",
+};
 
 export default function RootLayout({
   children,
@@ -8,9 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
         <Navbar />
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );

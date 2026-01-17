@@ -6,30 +6,35 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import { Video } from "@/components/extensions/Video";
 
-export default function Editor({
-  content,
-  onChange,
-}: {
+type Props = {
   content: string;
   onChange: (html: string) => void;
-}) {
+};
+
+export default function Editor({ content, onChange }: Props) {
   const editor = useEditor({
     extensions: [
       StarterKit,
       Image,
-      Link.configure({ openOnClick: false }),
+      Link.configure({
+        openOnClick: false,
+      }),
       Video,
     ],
     content,
-    immediatelyRender: false, // Next.js 16 SSR fix
+    immediatelyRender: false, // SSR fix for Next 16
     onUpdate({ editor }) {
       onChange(editor.getHTML());
     },
   });
 
-  if (!editor) return null;
-
-  async function upload(file: File) {
+  /* =========================
+     UPLOAD HELPER
+     ========================= */
+  async function upload(file: File): Promise<{
+    url: string;
+    type: "image" | "video";
+  }> {
     const data = new FormData();
     data.append("file", file);
 
@@ -42,18 +47,30 @@ export default function Editor({
       throw new Error("Upload failed");
     }
 
-    return res.json() as Promise<{
-      url: string;
-      type: "image" | "video";
-    }>;
+    return res.json();
   }
 
+  /* =========================
+     ADD IMAGE
+     ========================= */
   async function addImage(file: File) {
+    if (!editor) return;
+
     const { url } = await upload(file);
-    editor.chain().focus().setImage({ src: url }).run();
+
+    editor
+      .chain()
+      .focus()
+      .setImage({ src: url })
+      .run();
   }
 
+  /* =========================
+     ADD VIDEO
+     ========================= */
   async function addVideo(file: File) {
+    if (!editor) return;
+
     const { url } = await upload(file);
 
     editor
@@ -67,14 +84,26 @@ export default function Editor({
             type: file.type,
           },
         },
-        { type: "paragraph" },
+        {
+          type: "paragraph",
+        },
       ])
       .run();
   }
 
+  if (!editor) {
+    return (
+      <div className="border rounded-lg p-4 text-gray-500">
+        Loading editor…
+      </div>
+    );
+  }
+
   return (
     <div className="border rounded-lg bg-white dark:bg-gray-900">
-      {/* TOOLBAR */}
+      {/* =========================
+         TOOLBAR
+         ========================= */}
       <div
         className="
           flex flex-wrap gap-2 p-2 border-b
@@ -84,7 +113,9 @@ export default function Editor({
       >
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
+          onClick={() =>
+            editor.chain().focus().toggleBold().run()
+          }
           className="editor-btn"
         >
           Bold
@@ -92,7 +123,9 @@ export default function Editor({
 
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+          onClick={() =>
+            editor.chain().focus().toggleItalic().run()
+          }
           className="editor-btn"
         >
           Italic
@@ -101,7 +134,11 @@ export default function Editor({
         <button
           type="button"
           onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
+            editor
+              .chain()
+              .focus()
+              .toggleHeading({ level: 2 })
+              .run()
           }
           className="editor-btn"
         >
@@ -115,7 +152,8 @@ export default function Editor({
             hidden
             accept="image/*"
             onChange={e =>
-              e.target.files && addImage(e.target.files[0])
+              e.target.files &&
+              addImage(e.target.files[0])
             }
           />
         </label>
@@ -127,13 +165,16 @@ export default function Editor({
             hidden
             accept="video/mp4,video/webm"
             onChange={e =>
-              e.target.files && addVideo(e.target.files[0])
+              e.target.files &&
+              addVideo(e.target.files[0])
             }
           />
         </label>
       </div>
 
-      {/* CONTENT */}
+      {/* =========================
+         CONTENT
+         ========================= */}
       <EditorContent
         editor={editor}
         className="
