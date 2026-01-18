@@ -27,5 +27,5 @@ INSERT INTO users (username, email, password)
 VALUES (
   'admin',
   'admin@example.com',
-  '$2a$12$HVH3CnQFDVzWZcgwuz1orejDZ3YUAm6xLHOqhfh5yssNcp2BNr4ky'
+  '$2a$12$V1mDeopHyVF0wZAk5dfEneZPBQGhpgwxaYtvdKEj1ZVRzRTLa9VVq'
 );
