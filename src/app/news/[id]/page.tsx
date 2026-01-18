@@ -52,7 +52,13 @@ export default async function PostPage({
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-5">
 
         {/* ================= LEFT: ARTICLE CONTENT ================= */}
-        <article className="prose dark:prose-invert max-w-none">
+        <article
+          className="
+            prose dark:prose-invert max-w-none
+            order-2
+            lg:order-1
+          "
+        >
           <div
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
@@ -64,6 +70,10 @@ export default async function PostPage({
             border border-gray-200 dark:border-gray-700
             rounded-xl p-6
             h-fit
+
+            order-1
+            lg:order-2
+
             lg:sticky
             lg:bottom-[10px]
           "
