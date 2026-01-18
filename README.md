@@ -43,7 +43,7 @@ Modern **blog / news platform** built with **Next.js (App Router)**, **MariaDB**
 ### 1️⃣ Clone repository
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/surafino.git](https://github.com/Jetomit-Bio/Surafino.git
+git clone https://github.com/Jetomit-Bio/Surafino.git
 cd surafino
 ```
 2️⃣ Run installer
